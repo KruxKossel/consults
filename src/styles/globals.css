@@ -28,6 +28,9 @@ header {
   background-color: var(--primary-color);
   color: white;
   padding: 10px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 100%;
   position: fixed;
   top: 0;
@@ -49,12 +52,25 @@ header nav ul li a {
   font-weight: bold;
 }
 
+header nav ul li a:hover {
+  text-decoration: underline;
+}
+
 main {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-grow: 1;
   padding: 70px 20px; /* Espaço para o cabeçalho e rodapé */
+}
+
+.nav-menu {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 0;
 }
 
 .container {
@@ -71,6 +87,12 @@ main {
   justify-content: center; /* Centralizar verticalmente */
   align-items: center; /* Centralizar horizontalmente */
   position: relative;
+}
+
+.logout-menu {
+  position: absolute;
+  right: 20px;
+  top: 10px;
 }
 
 .header-text {
@@ -111,7 +133,11 @@ footer {
 }
 
 .button-container {
-  margin-top: 10px; /* Adiciona espaço acima do botão */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px; /* Adiciona espaçamento entre os botões */
+  margin-top: 20px;
 }
 
 button {
@@ -125,6 +151,119 @@ button {
 
 button:hover {
   background-color: #388e3c;
+}
+
+.confirm-button {
+  background-color: #4caf50; /* Verde */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.confirm-button:hover {
+  background-color: #388e3c;
+}
+
+.skip-button {
+  background-color: #ff7043; /* Laranja */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.skip-button:hover {
+  background-color: #f4511e;
+}
+
+.logout-button {
+  background-color: var(--secondary-color);
+  color: rgb(78, 0, 0);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+}
+
+.logout-button:hover {
+  background-color: #f4511e;
+}
+
+/* Estilos específicos para as páginas de login e registro */
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px; /* Espaçamento entre os campos do formulário */
+  width: 100%; /* O formulário ocupa toda a largura disponível */
+  max-width: 400px; /* Largura máxima para manter o formulário compacto */
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+p {
+  margin: 0; /* Remove a margem padrão */
+  padding: 0;
+  font-size: 1rem;
+  color: var(--foreground);
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Estilos específicos para a página de busca */
+.input-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.results-container {
+  margin-top: 20px;
+  width: 100%;
+}
+
+.result-item {
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  padding: 8px;
+  text-align: center;
+  border: 1px solid #ccc;
 }
 
 /* Estilos responsivos */

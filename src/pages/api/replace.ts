@@ -1,4 +1,4 @@
-// src/pages/api/upload.ts
+// src/pages/api/replace.ts
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 import readXlsxFile from 'read-excel-file/node';
@@ -20,8 +20,7 @@ const supabaseAdmin = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY! // Use a chave de função de serviço do Supabase
 );
 
-// Handler para a API de upload
-const uploadHandler = async (req: NextApiRequest, res: NextApiResponse) => {
+const replaceHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, message: 'Método não permitido' });
   }
@@ -48,7 +47,8 @@ const uploadHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     const file = Array.isArray(files.file) ? files.file[0] : files.file;
-    console.log("Arquivo recebido:", file);
+    const cidade = Array.isArray(fields.cidade) ? fields.cidade[0] : fields.cidade;
+    const uf = Array.isArray(fields.uf) ? fields.uf[0] : fields.uf;
 
     if (!file) {
       return res.status(400).json({ success: false, message: 'Arquivo não enviado' });
@@ -58,53 +58,61 @@ const uploadHandler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     try {
       const rows = await readXlsxFile(tempFilePath);
-      console.log("Linhas lidas da planilha:", rows);
+      const daysOfWeek = ["segunda", "terça", "quarta", "quinta", "sexta", "sábado", "domingo"];
 
-      const expectedColumns = ["NOME DA CIDADE", "UF", "SEGUNDA", "TERÇA", "QUARTA", "QUINTA", "SEXTA", "SÁBADO", "DOMINGO"];
-      const columnHeaders = rows[0].map(header => header.toString().toUpperCase());
+      // Verifique se a cidade existe para substituir os dados
+      const { data: existingSemana, error: findError } = await supabaseAdmin
+        .from('semanas')
+        .select('*')
+        .eq('cidade', cidade)
+        .eq('uf', uf)
+        .single();
 
-      console.log("Cabeçalhos das colunas:", columnHeaders);
-
-      const isValidFormat = expectedColumns.every((col, index) => col === columnHeaders[index]);
-
-      if (!isValidFormat) {
-        console.error("Formato da planilha inválido:", { expectedColumns, columnHeaders });
-        return res.status(400).json({ success: false, message: "O formato da planilha não está conforme o padrão estabelecido." });
+      if (findError) {
+        throw findError;
       }
 
-      const duplicates = [];
+      const semana_id = existingSemana.id;
+
+      // Delete os dados existentes na tabela `planilhas`
+      const { error: deleteError } = await supabaseAdmin
+        .from('planilhas')
+        .delete()
+        .eq('semana_id', semana_id);
+
+      if (deleteError) {
+        throw deleteError;
+      }
+
+      // Inserir novos dados na tabela `planilhas`
       for (let i = 1; i < rows.length; i++) {
         const row = rows[i];
 
-        // Verifique se a cidade já existe
-        const { data: existingSemana, error: findError } = await supabaseAdmin
-          .from('semanas')
-          .select('*')
-          .eq('cidade', row[0])
-          .eq('uf', row[1])
-          .single();
+        if (row[0] === cidade && row[1] === uf) {
+          const sanitizedRows = [];
+          for (let j = 2; j < row.length; j++) {
+            sanitizedRows.push({
+              semana_id,
+              dia_semana: daysOfWeek[j - 2],
+              status: row[j]
+            });
+          }
 
-        if (findError && findError.code !== 'PGRST116') {
-          throw findError;
-        }
-
-        if (existingSemana) {
-          duplicates.push({ cidade: row[0], uf: row[1], semana_id: existingSemana.id });
+          for (const sanitizedRow of sanitizedRows) {
+            const { error: insertError } = await supabaseAdmin.from('planilhas').insert([sanitizedRow]);
+            if (insertError) throw insertError;
+          }
         }
       }
 
       fs.unlinkSync(tempFilePath);
 
-      if (duplicates.length > 0) {
-        return res.status(200).json({ success: false, message: `Algumas cidades já existem. Deseja substituir os dados?`, confirmReplace: true, duplicates });
-      } else {
-        return res.status(200).json({ success: true, message: 'Upload realizado com sucesso. Nenhuma cidade duplicada encontrada.' });
-      }
+      res.status(200).json({ success: true, message: 'Dados substituídos com sucesso.' });
     } catch (error) {
       console.error("Erro ao processar o upload:", error);
-      return res.status(500).json({ success: false, message: "Ocorreu um erro ao processar o upload da planilha." });
+      res.status(500).json({ success: false, message: "Ocorreu um erro ao processar a substituição dos dados." });
     }
   });
 };
 
-export default uploadHandler;
+export default replaceHandler;

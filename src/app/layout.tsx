@@ -1,7 +1,13 @@
-import type { Metadata } from "next";
+// src/app/layout.tsx
+"use client";
+
 import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../styles/globals.css";
+import { AuthProvider, useAuth } from "../context/AuthContext";
+import { useRouter, usePathname } from 'next/navigation';
+import { ReactNode, useEffect } from 'react';
+import LoadingScreen from "../components/LoadingScreen";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,9 +19,57 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Consultas",
-  description: "Consulta de horários por cidade",
+const AuthenticatedLayout = ({ children }: { children: ReactNode }) => {
+  const { user, isLoading, signOut } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname() || "";
+
+  useEffect(() => {
+    if (!isLoading && !user && !['/login', '/register'].includes(pathname)) {
+      router.push("/login");
+    }
+  }, [isLoading, user, pathname, router]);
+
+  if (isLoading && !['/login', '/register'].includes(pathname)) {
+    return <LoadingScreen />;
+  }
+
+  if (!user && !['/login', '/register'].includes(pathname)) {
+    return <div>Redirecionando para a tela de login...</div>;
+  }
+
+  const handleLogout = async () => {
+    await signOut();
+    router.push('/login');
+  };
+
+  return (
+    <div>
+      <header>
+        <nav>
+          <ul className="nav-menu">
+            <li>
+              <Link href="/">Home</Link>
+            </li>
+            <li>
+              <Link href="/search">Buscar</Link>
+            </li>
+          </ul>
+          {user && (
+            <ul className="nav-menu logout-menu">
+              <li>
+                <Link href="#" onClick={handleLogout}>Logout</Link>
+              </li>
+            </ul>
+          )}
+        </nav>
+      </header>
+      <main>{children}</main>
+      <footer>
+        <p>&copy; 2025 Consultas. Todos os direitos reservados.</p>
+      </footer>
+    </div>
+  );
 };
 
 export default function RootLayout({
@@ -26,22 +80,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <header>
-          <nav>
-            <ul>
-              <li>
-                <Link href="/">Home</Link>
-              </li>
-              <li>
-                <Link href="/search">Buscar</Link>
-              </li>
-            </ul>
-          </nav>
-        </header>
-        <main>{children}</main>
-        <footer>
-          <p>&copy; 2025 Consultas. Todos os direitos reservados.</p>
-        </footer>
+        <AuthProvider>
+          <AuthenticatedLayout>
+            {children}
+          </AuthenticatedLayout>
+        </AuthProvider>
       </body>
     </html>
   );

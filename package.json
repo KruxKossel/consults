@@ -9,13 +9,20 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@next-auth/supabase-adapter": "^0.2.1",
+    "@supabase/auth-helpers-nextjs": "^0.10.0",
+    "@supabase/auth-helpers-react": "^0.5.0",
+    "@supabase/auth-ui-react": "^0.4.7",
     "@supabase/supabase-js": "^2.48.1",
     "formidable": "^3.5.2",
     "micro": "^10.0.1",
     "multer": "^1.4.5-lts.1",
     "next": "15.1.7",
+    "next-auth": "^4.24.11",
+    "nodemailer": "^6.10.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-select": "^5.10.0",
     "read-excel-file": "^5.8.6",
     "supabase": "^2.12.1"
   },

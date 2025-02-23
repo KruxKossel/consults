@@ -8,7 +8,7 @@ export default function Home() {
       <div className="header-text">
         <h1>Bem-vindo ao Consultas</h1>
         <p>Faça upload de uma planilha Excel com horários.</p>
-        <p className="description">Por favor, faça o upload de uma planilha Excel (.xlsx) com o seguinte formato:</p>
+        {/* <p className="description">Por favor, faça o upload de uma planilha Excel (.xlsx) com o seguinte formato:</p> */}
       </div>
       <FileUpload />
     </div>
