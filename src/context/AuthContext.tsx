@@ -3,7 +3,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, AuthResponse } from '@supabase/supabase-js';
-import { supabase } from '../supabaseClient'; // Importa o cliente Supabase corretamente
+import { supabase } from '../supabaseClient';
 
 interface AuthContextType {
   user: User | null;
@@ -46,7 +46,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     user,
     isLoading,
     signIn: (email: string, password: string) => supabase.auth.signInWithPassword({ email, password }),
-    signUp: (email: string, password: string) => supabase.auth.signUp({ email, password, options: { emailRedirectTo: process.env.NEXT_PUBLIC_SUPABASE_REDIRECT_URL }}),
+    signUp: (email: string, password: string) => supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: process.env.NEXT_PUBLIC_SUPABASE_REDIRECT_URL
+      }
+    }),
     signOut: () => supabase.auth.signOut(),
   };
 

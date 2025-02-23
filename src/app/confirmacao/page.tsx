@@ -1,7 +1,8 @@
 "use client";
 
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect, Suspense } from 'react';
+import { useEffect } from 'react';
+import { Suspense } from 'react';
 import { supabase } from '../../supabaseClient';
 
 const Confirmacao = () => {
@@ -23,6 +24,8 @@ const Confirmacao = () => {
             router.push('/');
           }
         });
+      } else {
+        console.error("Access token não encontrado.");
       }
     }
   }, [searchParams, router]);
