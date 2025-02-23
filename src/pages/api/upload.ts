@@ -1,3 +1,4 @@
+// src/pages/api/upload.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import readXlsxFile, { CellValue } from 'read-excel-file/node';
 import { supabase } from '../../supabaseClient';
@@ -15,15 +16,14 @@ const uploadHandler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   try {
-    // Remover a variável body não utilizada
-    await buffer(req, { limit: '10mb' }); // Use buffer para limitar o tamanho do body
-    // Aqui você pode acessar o arquivo a partir do body
-    // Processar e manipular o arquivo conforme necessário
+    const body = await buffer(req, { limit: '10mb' });
+    console.log("Buffer recebido:", body);
 
-    // Exemplo: Simulação de obtenção de caminho do arquivo
+    // Simulação de obtenção de caminho do arquivo
     const filePath = 'path_to_your_uploaded_file'; // Substitua pelo caminho real do arquivo
 
-    const rows = await readXlsxFile(filePath); // Use o caminho do arquivo
+    const rows = await readXlsxFile(filePath);
+    console.log("Linhas lidas da planilha:", rows);
 
     const expectedColumns = ["nome da cidade", "uf", "segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"];
     const columnHeaders = rows[0].map((header: CellValue) => {
@@ -32,6 +32,8 @@ const uploadHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
       throw new Error('Formato de cabeçalho inválido');
     });
+
+    console.log("Cabeçalhos das colunas:", columnHeaders);
 
     // Verificar se a planilha está no formato esperado
     const isValidFormat = expectedColumns.every((col, index) => col === columnHeaders[index]);
@@ -52,6 +54,8 @@ const uploadHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       sabado: row[7],
       domingo: row[8],
     }));
+
+    console.log("Linhas sanitizadas:", sanitizedRows);
 
     // Inserir os dados no banco de dados
     for (const row of sanitizedRows) {
