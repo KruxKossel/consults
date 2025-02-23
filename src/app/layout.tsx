@@ -56,11 +56,9 @@ const AuthenticatedLayout = ({ children }: { children: ReactNode }) => {
             </li>
           </ul>
           {user && (
-            <ul className="nav-menu logout-menu">
-              <li>
-                <Link href="#" onClick={handleLogout}>Logout</Link>
-              </li>
-            </ul>
+            <Link href="/login" className="logout-link" onClick={handleLogout}>
+              Logout
+            </Link>
           )}
         </nav>
       </header>
