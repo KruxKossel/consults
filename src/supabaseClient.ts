@@ -1,8 +1,7 @@
 // src/supabaseClient.ts
 import { createClient } from '@supabase/supabase-js';
 
-// URL e chave do seu projeto Supabase
-const supabaseUrl = 'https://xyzcompany.supabase.co';
-const supabaseKey = 'public-anon-key';
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY || '';
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
