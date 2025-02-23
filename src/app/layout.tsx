@@ -1,4 +1,3 @@
-// src/app/layout.tsx
 "use client";
 
 import Link from "next/link";
@@ -54,12 +53,14 @@ const AuthenticatedLayout = ({ children }: { children: ReactNode }) => {
             <li>
               <Link href="/search">Buscar</Link>
             </li>
+            {user && (
+              <li>
+                <button className="logout-link" onClick={handleLogout}>
+                  Logout
+                </button>
+              </li>
+            )}
           </ul>
-          {user && (
-            <Link href="/login" className="logout-link" onClick={handleLogout}>
-              Logout
-            </Link>
-          )}
         </nav>
       </header>
       <main>{children}</main>

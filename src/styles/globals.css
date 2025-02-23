@@ -181,20 +181,17 @@ button:hover {
   background-color: #f4511e;
 }
 
-.logout-button {
+.logout-link {
   background-color: var(--secondary-color);
-  color: rgb(78, 0, 0);
+  color: white;
   border: none;
   padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  position: absolute;
-  top: 10px;
-  right: 20px;
 }
 
-.logout-button:hover {
+.logout-link:hover {
   background-color: #f4511e;
 }
 
