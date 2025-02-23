@@ -85,6 +85,7 @@ const uploadHandler = async (req: NextApiRequest, res: NextApiResponse) => {
           .single();
 
         if (findError && findError.code !== 'PGRST116') {
+          console.error("Erro ao verificar duplicatas:", findError);
           throw findError;
         }
 
@@ -94,21 +95,25 @@ const uploadHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       }
 
       if (duplicates.length > 0) {
+        console.log("Cidades duplicadas encontradas:", duplicates);
         return res.status(200).json({ success: false, message: `Algumas cidades já existem. Deseja substituir os dados?`, confirmReplace: true, duplicates });
       } else {
         for (let i = 1; i < rows.length; i++) {
           const row = rows[i];
+          console.log("Inserindo cidade:", row);
 
           const { error: insertError } = await supabaseAdmin
             .from('semanas')
             .insert([{ cidade: row[0], uf: row[1], user_id: user.id, data: row.slice(2) }]);
 
           if (insertError) {
+            console.error("Erro ao inserir cidade:", insertError);
             throw insertError;
           }
         }
 
         fs.unlinkSync(tempFilePath);
+        console.log("Upload realizado com sucesso.");
         return res.status(200).json({ success: true, message: 'Upload realizado com sucesso. Nenhuma cidade duplicada encontrada.' });
       }
     } catch (error) {
