@@ -1,3 +1,5 @@
+// src/components/FileUpload.tsx
+
 "use client";
 
 import React, { useState } from 'react';
@@ -10,7 +12,6 @@ interface Duplicate {
   semana_id: number;
 }
 
-// Componente de upload de arquivo
 const FileUpload: React.FC = () => {
   const { user } = useAuth();
   const [file, setFile] = useState<File | null>(null);

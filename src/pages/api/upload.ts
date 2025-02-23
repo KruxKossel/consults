@@ -75,12 +75,13 @@ const uploadHandler = async (req: NextApiRequest, res: NextApiResponse) => {
       for (let i = 1; i < rows.length; i++) {
         const row = rows[i];
 
-        // Verifique se a cidade já existe
+        // Verifique se a cidade já existe para o usuário atual
         const { data: existingSemana, error: findError } = await supabaseAdmin
           .from('semanas')
           .select('*')
           .eq('cidade', row[0])
           .eq('uf', row[1])
+          .eq('user_id', user.id)
           .single();
 
         if (findError && findError.code !== 'PGRST116') {
@@ -92,11 +93,22 @@ const uploadHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         }
       }
 
-      fs.unlinkSync(tempFilePath);
-
       if (duplicates.length > 0) {
         return res.status(200).json({ success: false, message: `Algumas cidades já existem. Deseja substituir os dados?`, confirmReplace: true, duplicates });
       } else {
+        for (let i = 1; i < rows.length; i++) {
+          const row = rows[i];
+
+          const { error: insertError } = await supabaseAdmin
+            .from('semanas')
+            .insert([{ cidade: row[0], uf: row[1], user_id: user.id, data: row.slice(2) }]);
+
+          if (insertError) {
+            throw insertError;
+          }
+        }
+
+        fs.unlinkSync(tempFilePath);
         return res.status(200).json({ success: true, message: 'Upload realizado com sucesso. Nenhuma cidade duplicada encontrada.' });
       }
     } catch (error) {
