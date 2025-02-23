@@ -29,11 +29,11 @@ const AuthenticatedLayout = ({ children }: { children: ReactNode }) => {
     }
   }, [isLoading, user, pathname, router]);
 
-  if (isLoading && !['/login', '/register', '/confirmacao'].includes(pathname)) {
+  if (isLoading && !['/login', '/register'].includes(pathname)) {
     return <LoadingScreen />;
   }
 
-  if (!user && !['/login', '/register', '/confirmacao'].includes(pathname)) {
+  if (!user && !['/login', '/register'].includes(pathname)) {
     return <div>Redirecionando para a tela de login...</div>;
   }
 
@@ -54,11 +54,11 @@ const AuthenticatedLayout = ({ children }: { children: ReactNode }) => {
               <Link href="/search">Buscar</Link>
             </li>
             {user && (
+              <ul className="nav-menu  logout-menu">
               <li>
-                <button className="logout-link" onClick={handleLogout}>
-                  Logout
-                </button>
+                <Link href="#" onClick={handleLogout}>Logout</Link>
               </li>
+            </ul>
             )}
           </ul>
         </nav>

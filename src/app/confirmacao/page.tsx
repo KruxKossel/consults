@@ -33,7 +33,7 @@ const Confirmacao = () => {
   return (
     <div className="container">
       <h1>Confirmação de Email</h1>
-      <p>Seu email foi confirmado com sucesso. Redirecionando...</p>
+      <p>Seu email foi confirmado com sucesso.</p>
     </div>
   );
 };
