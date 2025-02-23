@@ -25,16 +25,16 @@ const AuthenticatedLayout = ({ children }: { children: ReactNode }) => {
   const pathname = usePathname() || "";
 
   useEffect(() => {
-    if (!isLoading && !user && !['/login', '/register'].includes(pathname)) {
+    if (!isLoading && !user && pathname !== '/confirmacao' && !['/login', '/register'].includes(pathname)) {
       router.push("/login");
     }
   }, [isLoading, user, pathname, router]);
 
-  if (isLoading && !['/login', '/register'].includes(pathname)) {
+  if (isLoading && !['/login', '/register', '/confirmacao'].includes(pathname)) {
     return <LoadingScreen />;
   }
 
-  if (!user && !['/login', '/register'].includes(pathname)) {
+  if (!user && !['/login', '/register', '/confirmacao'].includes(pathname)) {
     return <div>Redirecionando para a tela de login...</div>;
   }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { supabase } from '../../supabaseClient';
 
 const Confirmacao = () => {
@@ -35,4 +35,10 @@ const Confirmacao = () => {
   );
 };
 
-export default Confirmacao;
+const ConfirmacaoPage = () => (
+  <Suspense fallback={<div>Carregando...</div>}>
+    <Confirmacao />
+  </Suspense>
+);
+
+export default ConfirmacaoPage;
