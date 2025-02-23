@@ -24,6 +24,7 @@ const uploadHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     const file = Array.isArray(files.file) ? files.file[0] : files.file;
+    console.log("Arquivo recebido:", file);
 
     if (!file) {
       return res.status(400).json({ success: false, message: 'Arquivo não enviado' });
@@ -34,19 +35,22 @@ const uploadHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
       // Ler o arquivo temporário
       const rows = await readXlsxFile(tempFilePath);
+      console.log("Linhas lidas da planilha:", rows);
 
-      const expectedColumns = ["nome da cidade", "uf", "segunda", "terca", "quarta", "quinta", "sexta", "sabado", "domingo"];
-      const columnHeaders = rows[0].map((header: CellValue) => {
-        if (typeof header === 'string') {
-          return header.toLowerCase();
-        }
-        throw new Error('Formato de cabeçalho inválido');
-      });
+      const expectedColumns = ["nome da cidade", "uf", "segunda", "terça", "quarta", "quinta", "sexta", "sábado", "domingo"];
+      const normalizeHeader = (header: string) => header.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+      const normalizedExpectedColumns = expectedColumns.map(normalizeHeader);
+      const columnHeaders = rows[0].map(header => normalizeHeader(header.toString()));
+      
+      console.log("Cabeçalhos normalizados das colunas:", columnHeaders);
+      console.log("Colunas esperadas normalizadas:", normalizedExpectedColumns);
 
       // Verificar se a planilha está no formato esperado
-      const isValidFormat = expectedColumns.every((col, index) => col === columnHeaders[index]);
+      const isValidFormat = normalizedExpectedColumns.every((col, index) => col === columnHeaders[index]);
 
       if (!isValidFormat) {
+        console.error("Formato da planilha inválido:", { normalizedExpectedColumns, columnHeaders });
         return res.status(400).json({ success: false, message: "O formato da planilha não está conforme o padrão estabelecido." });
       }
 
@@ -62,6 +66,7 @@ const uploadHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         sabado: row[7],
         domingo: row[8],
       }));
+      console.log("Linhas sanitizadas:", sanitizedRows);
 
       // Inserir os dados no banco de dados
       for (const row of sanitizedRows) {
@@ -69,13 +74,13 @@ const uploadHandler = async (req: NextApiRequest, res: NextApiResponse) => {
         if (error) throw error;
       }
 
+      // Remover o arquivo temporário
+      fs.unlinkSync(tempFilePath);
+
       res.status(200).json({ success: true });
     } catch (error) {
       console.error("Erro ao processar o upload:", error);
       res.status(500).json({ success: false, message: "Ocorreu um erro ao processar o upload da planilha." });
-    } finally {
-      // Remover o arquivo temporário
-      fs.unlinkSync(tempFilePath);
     }
   });
 };
