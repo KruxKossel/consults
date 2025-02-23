@@ -1,0 +1,147 @@
+/* src/styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #f0f4f8; /* Fundo claro */
+  --foreground: #333333; /* Texto em cor legível */
+  --primary-color: #ffa726; /* Cor primária pastel quente */
+  --secondary-color: #ff7043; /* Cor secundária pastel quente */
+  --card-background: #ffffff; /* Fundo do card */
+  --card-shadow: rgba(0, 0, 0, 0.1); /* Sombra do card */
+  --button-color: #4caf50; /* Cor do botão verde */
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 10px 20px;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  z-index: 1000;
+}
+
+header nav ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 0;
+}
+
+header nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  padding: 70px 20px; /* Espaço para o cabeçalho e rodapé */
+}
+
+.container {
+  width: 90%; /* Card ocupará 90% da largura da tela */
+  height: calc(100vh - 140px); /* Card ocupará quase toda a altura da tela, descontando o cabeçalho e rodapé */
+  background: var(--card-background);
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px var(--card-shadow);
+  text-align: center; /* Centralizar o texto */
+  overflow-y: auto; /* Adiciona rolagem interna, se necessário */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centralizar verticalmente */
+  align-items: center; /* Centralizar horizontalmente */
+  position: relative;
+}
+
+.header-text {
+  position: absolute;
+  top: 20px; /* Move o texto para o topo */
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center; /* Centralizar o texto */
+}
+
+footer {
+  background-color: var(--primary-color);
+  color: white;
+  text-align: center;
+  padding: 10px 20px;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  z-index: 1000;
+}
+
+.file-upload-instructions {
+  text-align: left; /* Alinhar o texto à esquerda */
+  margin: 0 auto;
+  display: table;
+}
+
+.description {
+  text-align: center; /* Centralizar o texto */
+}
+
+.file-upload-controls,
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Centralizar os elementos */
+  margin-top: 20px;
+}
+
+.button-container {
+  margin-top: 10px; /* Adiciona espaço acima do botão */
+}
+
+button {
+  background-color: var(--button-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #388e3c;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 20px;
+  }
+
+  header nav ul {
+    flex-direction: row; /* Deixe os itens lado a lado mesmo em telas menores */
+    flex-wrap: nowrap;
+    gap: 10px;
+  }
+
+  .file-upload-controls,
+  .button-container {
+    flex-direction: column; /* Empilhar verticalmente em telas menores */
+  }
+}
