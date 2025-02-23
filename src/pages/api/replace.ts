@@ -2,7 +2,6 @@
 
 import type { NextApiRequest, NextApiResponse } from 'next';
 import readXlsxFile from 'read-excel-file/node';
-import { supabase } from '../../supabaseClient';
 import formidable from 'formidable';
 import fs from 'fs';
 import { createClient } from '@supabase/supabase-js';
