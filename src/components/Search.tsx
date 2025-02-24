@@ -89,7 +89,7 @@ const Search: React.FC = () => {
             onChange={setCidade}
             placeholder="Buscar por cidade"
           />
-          <button onClick={buscarHorarios}>Buscar</button>
+          <button onClick={buscarHorarios} className="button">Buscar</button>
         </div>
         <div className="results-container">
           {resultados.map((semana: Semana) => (
@@ -98,22 +98,20 @@ const Search: React.FC = () => {
               <table>
                 <thead>
                   <tr>
-                    {diasDaSemana.map((dia) => (
-                      <th key={dia}>{dia}</th>
-                    ))}
+                    <th>Dia da Semana</th>
+                    <th>Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    {diasDaSemana.map((dia) => {
-                      const planilha = planilhas.find((p) => p.semana_id === semana.id && p.dia_semana === dia.toLowerCase());
-                      return (
-                        <td key={dia} style={{ borderRight: '1px solid #ccc', padding: '8px' }}>
-                          {planilha ? planilha.status : 0}
-                        </td>
-                      );
-                    })}
-                  </tr>
+                  {diasDaSemana.map((dia) => {
+                    const planilha = planilhas.find((p) => p.semana_id === semana.id && p.dia_semana === dia.toLowerCase());
+                    return (
+                      <tr key={dia}>
+                        <td>{dia}</td>
+                        <td>{planilha ? planilha.status : 0}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

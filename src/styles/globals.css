@@ -22,6 +22,8 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  -webkit-text-size-adjust: 100%; /* Para compatibilidade */
+  text-size-adjust: 100%; /* Para compatibilidade */
 }
 
 header {
@@ -44,6 +46,10 @@ header nav ul {
   justify-content: center;
   gap: 20px;
   margin: 0;
+}
+
+header nav ul li {
+  list-style: none;
 }
 
 header nav ul li a {
@@ -211,6 +217,7 @@ input {
   border: 1px solid #ccc;
   border-radius: 5px;
   font-size: 1rem;
+  autocapitalize: none; /* Remover a capitalização automática */
 }
 
 input:focus {
@@ -271,13 +278,131 @@ th, td {
   }
 
   header nav ul {
-    flex-direction: row; /* Deixe os itens lado a lado mesmo em telas menores */
-    flex-wrap: nowrap;
+    flex-direction: row; /* Mantém os itens lado a lado mesmo em telas menores */
     gap: 10px;
   }
 
   .file-upload-controls,
-  .button-container {
+  .button-container,
+  .input-container {
     flex-direction: column; /* Empilhar verticalmente em telas menores */
   }
+
+  /* Ajustes para tabelas */
+  table {
+    width: 100%;
+    display: block;
+    overflow-x: auto; /* Adicione rolagem horizontal */
+  }
+
+  th, td {
+    white-space: nowrap; /* Evite quebra de linha dentro das células da tabela */
+    padding: 8px; /* Ajuste o espaçamento interno */
+    font-size: 12px; /* Ajuste o tamanho da fonte */
+    text-align: left; /* Alinhar o texto à esquerda */
+  }
+
+  /* Ajustes para células específicas */
+  .file-upload-controls input[type="file"],
+  .input-container select,
+  .input-container button {
+    width: 100%; /* Garanta que os inputs e botões ocupem toda a largura */
+    margin-bottom: 10px; /* Espaçamento inferior */
+  }
+
+  .button-container .button,
+  .button-container .confirm-button,
+  .button-container .skip-button {
+    width: 100%; /* Garanta que os botões ocupem toda a largura */
+    margin-bottom: 10px; /* Espaçamento inferior */
+  }
+
+  /* Ajustes para texto */
+  p.description, .file-upload-instructions, .header-text, h3 {
+    font-size: 14px; /* Ajuste o tamanho da fonte para melhor legibilidade */
+    line-height: 1.4; /* Melhor espaçamento entre linhas */
+  }
+
+  /* Ajustes para a tabela dentro do .result-item */
+  .result-item {
+    padding: 10px;
+    box-shadow: 0 2px 4px var(--card-shadow);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background-color: var(--card-background);
+    width: 100%; /* Garanta que o item ocupe toda a largura disponível */
+  }
+
+  .results-container {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    flex-direction: column; /* Empilhar itens verticalmente */
+  }
+
+  /* Ajustes para a planilha */
+  .result-item table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .result-item th,
+  .result-item td {
+    font-size: 12px; /* Ajuste o tamanho da fonte */
+    padding: 8px; /* Ajuste o espaçamento interno */
+    text-align: left; /* Alinhar o texto à esquerda */
+    width: 45%; /* Garantir que cada célula ocupe 50% da largura */
+    box-sizing: border-box; /* Incluir padding e border no cálculo da largura */
+  }
+
+  .result-item table th:nth-child(1) {
+    width: 70%; /* Largura maior para "Dia da Semana" */
+  }
+
+  .result-item table th:nth-child(2) {
+    width: 30%; /* Largura menor para "Status" */
+  }
+
+  .result-item table th {
+    background-color: transparent; /* Remover cor de fundo */
+  }
+
+  .result-item table td {
+    background-color: var(--card-background); /* Remover cor de fundo das células */
+  }
+
+  .result-item tr {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
+    padding: 8px 0;
+  }
+
+  .result-item th,
+  .result-item td {
+    display: inline-block; /* Exiba como blocos em linha */
+  }
+
+  /* Espaçamento entre títulos */
+  .result-item th + th {
+    margin-left: 20px; /* Espaçamento entre os títulos */
+  }
+
+  /* Ajustes para mensagem */
+  p.message {
+    font-size: 12px; /* Ajuste o tamanho da fonte */
+    padding: 8px; /* Adicione espaçamento interno */
+  }
 }
+
+
+
+
+
+
+
+
+
+
+

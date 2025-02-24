@@ -16,7 +16,7 @@ const FileUpload: React.FC = () => {
   const { user } = useAuth();
   const [file, setFile] = useState<File | null>(null);
   const [message, setMessage] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
   const [duplicates, setDuplicates] = useState<Duplicate[]>([]);
   const [currentDuplicate, setCurrentDuplicate] = useState<Duplicate | null>(null);
 
@@ -45,13 +45,13 @@ const FileUpload: React.FC = () => {
       return;
     }
 
-    setIsUploading(true);
+    setIsProcessing(true);
     try {
       const token = (await supabase.auth.getSession()).data.session?.access_token;
 
       if (!token) {
         setMessage("Erro de autenticação. Por favor, faça login novamente.");
-        setIsUploading(false);
+        setIsProcessing(false);
         return;
       }
 
@@ -81,20 +81,20 @@ const FileUpload: React.FC = () => {
       console.error("Erro ao fazer o upload:", error);
       setMessage("Ocorreu um erro ao fazer o upload da planilha.");
     } finally {
-      setIsUploading(false);
+      setIsProcessing(false);
     }
   };
 
   const handleReplaceConfirm = async () => {
     if (!file || !currentDuplicate) return;
 
-    setIsUploading(true);
+    setIsProcessing(true);
     try {
       const token = (await supabase.auth.getSession()).data.session?.access_token;
 
       if (!token) {
         setMessage("Erro de autenticação. Por favor, faça login novamente.");
-        setIsUploading(false);
+        setIsProcessing(false);
         return;
       }
 
@@ -129,7 +129,7 @@ const FileUpload: React.FC = () => {
       console.error("Erro ao substituir os dados:", error);
       setMessage("Ocorreu um erro ao substituir os dados.");
     } finally {
-      setIsUploading(false);
+      setIsProcessing(false);
     }
   };
 
@@ -140,6 +140,7 @@ const FileUpload: React.FC = () => {
     } else {
       setCurrentDuplicate(null);
       setDuplicates([]);
+      setMessage("Todas as duplicatas foram processadas.");
     }
   };
 
@@ -155,18 +156,18 @@ const FileUpload: React.FC = () => {
         <input type="file" onChange={handleFileChange} title="Escolha um arquivo Excel para fazer upload" />
       </div>
       <div className="button-container">
-        <button type="button" className="button" onClick={handleFileUpload} disabled={isUploading}>
-          {isUploading ? 'Fazendo Upload...' : 'Upload'}
+        <button type="button" className="button" onClick={handleFileUpload} disabled={isProcessing}>
+          {isProcessing ? 'Fazendo Upload...' : 'Upload'}
         </button>
       </div>
       {currentDuplicate && (
         <div className="button-container">
           <strong><p>{`A cidade ${currentDuplicate.cidade} já existe. Deseja substituir os dados?`}</p></strong>
-          <button type="button" className="confirm-button" onClick={handleReplaceConfirm} disabled={isUploading}>
-            {isUploading ? 'Substituindo...' : 'Confirmar Substituição'}
+          <button type="button" className="confirm-button" onClick={handleReplaceConfirm} disabled={isProcessing}>
+            {isProcessing ? 'Substituindo...' : 'Confirmar Substituição'}
           </button>
-          <button type="button" className="skip-button" onClick={handleSkipDuplicate} disabled={isUploading}>
-            {isUploading ? 'Pulando...' : 'Pular Substituição'}
+          <button type="button" className="skip-button" onClick={handleSkipDuplicate} disabled={isProcessing}>
+            {isProcessing ? 'Pulando...' : 'Pular Substituição'}
           </button>
         </div>
       )}
